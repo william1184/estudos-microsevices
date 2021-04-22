@@ -6,13 +6,14 @@ import java.util.regex.Pattern;
 import br.com.unlimitedapps.common.CommonUtils;
 import br.com.unlimitedapps.domain.exceptions.CampoInvalidoException;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public class Cpf {
 	private static final Pattern VALID_CPF_ADDRESS_REGEX_COM_MASCARA = Pattern.compile("(^\\d{3}\\x2E\\d{3}\\x2E\\d{3}\\x2D\\d{2}$)");
 	private static final Pattern VALID_CPF_ADDRESS_REGEX_SEM_MASCARA = Pattern.compile("(^\\d{11}$)");
 	
-	@Getter
-	private final String numero;
+	private String numero;
 
 	/**
 	 * Devolve o numero do cpf
@@ -25,11 +26,17 @@ public class Cpf {
 		this.numero = CommonUtils.removeFormatacao(numero);			
 	}
 
-	
+	/**
+	 * Devolve o numero do cpf
+	 * @return String numero ( sem mascara )
+	 */
+	public String getNumero() {
+		return CommonUtils.removeFormatacao(numero);
+	}
 
 	/**
 	 * Devolve o numero do cpf
-	 * @param String numero ( com mascara )
+	 * @return String numero ( com mascara )
 	 */
 	public String getNumeroComMascara() {
 		return CommonUtils.formataCPF(numero);

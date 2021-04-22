@@ -12,9 +12,9 @@ import lombok.ToString;
 @Data
 @AllArgsConstructor
 @ToString
+public class Usuario {
 
-public class UsuarioModel {
-
+	private String id;
 	private Cpf cpf;
 	private Email email;
 	private String senha;
@@ -24,13 +24,13 @@ public class UsuarioModel {
 	private LocalDateTime dataCriacao;
 	private LocalDateTime dataUltimaAlteracao;
 	
-	public UsuarioModel() {
+	public Usuario() {
 		this.tipo = TipoUsuario.PADRAO;
 		this.dataCriacao = LocalDateTime.now();
 		this.dataUltimaAlteracao = LocalDateTime.now();
 	}
 	
-	public UsuarioModel(Cpf cpf, Email email, String nome, String senha) {
+	public Usuario(Cpf cpf, Email email, String nome, String senha) {
 		this();
 		if(cpf == null) {
 			throw new CampoObrigatorioException("O campo cpf e obrigatorio!");
@@ -62,17 +62,16 @@ public class UsuarioModel {
 		this.senha = senha;
 	}
 
-	public UsuarioModel(Cpf cpf, String nome, String urlImagem) {
-		this();
-		if(cpf == null) {
-			throw new CampoObrigatorioException("O campo cpf e obrigatorio!");
+	public Usuario(String id, String nome, String urlImagem) {
+		if(id == null) {
+			throw new CampoObrigatorioException("O campo identificador e obrigatorio!");
 		}
 		
 		if(nome.length() < 5) {
 			throw new CampoInvalidoException("O nome esta invalido!");
 		}
 		
-		this.cpf = cpf;
+		this.id = id;
 		this.nome = nome;
 		this.urlImagem = urlImagem;
 	}

@@ -2,7 +2,6 @@ package br.com.unlimitedapps.common;
 
 import java.text.MessageFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import br.com.unlimitedapps.domain.exceptions.FormatoInvalidoException;
@@ -30,7 +29,7 @@ public class CommonUtils {
 	}
 	
 	/**
-	 * Formata CPF
+	 * Formata CPF ADICIONANDO MASCARA
 	 * @param int
 	 * @return String
 	 */
@@ -89,34 +88,6 @@ public class CommonUtils {
 	 */
 	public static String converterLocalDateToString(LocalDate data) {
 		return data.format( DateTimeFormatter.ISO_INSTANT );
-	}
-	
-	/**
-	 * @param LocalDate data
-	 * @param String format
-	 * @return String
-	 */
-	public static String converterLocalDateToString(LocalDate data, String format) {
-		return data.format( DateTimeFormatter.ofPattern(format) );
-	}
-	
-	/**
-	 * Converter string data em localdateTime
-	 * do formato yyyy-mm-dd HH:mm
-	 * @param String data
-	 * @return LocalDateTime
-	 */
-	public static LocalDateTime converterStringDataParaLocalDateTime(String data) {
-		return LocalDateTime.parse(data, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));	
-	}
-	
-	/**
-	 * @param LocalDateTime data
-	 * @param String format
-	 * @return String
-	 */
-	public static String converterLocalDateTimeToString(LocalDateTime data) {
-		return data.format( DateTimeFormatter.ISO_LOCAL_DATE_TIME );
 	}
 	
 }

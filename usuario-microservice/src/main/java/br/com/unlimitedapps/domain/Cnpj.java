@@ -2,6 +2,7 @@ package br.com.unlimitedapps.domain;
 
 import java.util.regex.Pattern;
 
+import br.com.unlimitedapps.common.CommonUtils;
 import br.com.unlimitedapps.domain.exceptions.CampoInvalidoException;
 import lombok.Getter;
 
@@ -16,6 +17,14 @@ public class Cnpj {
 			throw new CampoInvalidoException("CNPJ Invalido");
 		}
 		this.numero = numero;			
+	}
+	
+	/**
+	 * Devolve o numero do cnpj
+	 * @param String numero ( com mascara )
+	 */
+	public String getNumeroComMascara() {
+		return CommonUtils.formataCNPJ(numero);
 	}
 
 }

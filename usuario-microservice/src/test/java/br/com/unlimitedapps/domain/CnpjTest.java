@@ -4,37 +4,37 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import br.com.unlimitedapps.domain.exceptions.CampoInvalidoException;
+import br.com.unlimitedapps.mock.CnpjMock;
 
 class CnpjTest {
 
-	public static final String CNPJ_INVALIDO_2 = "10680902000170";
-	public static final String CNPJ_INVALIDO_1 = "10.680.902/000170";
-	public static final String CNPJ_VALIDO = "10.680.902/0001-70";
 
 	@Test
 	void deveRetornarComoCNPJValido() {
-		Cnpj cnpj = new Cnpj(CNPJ_VALIDO);
+		Cnpj cnpj = CnpjMock.mockCNPJValidoComMascara();
 		
-		Assertions.assertEquals(CNPJ_VALIDO, cnpj.getNumero());
+		Assertions.assertEquals(CnpjMock.CNPJ_VALIDO_COM_MASCARA, cnpj.getNumeroComMascara());
+		
+		Assertions.assertEquals(CnpjMock.CNPJ_VALIDO_SEM_MASCARA, cnpj.getNumero());
 	}
 	
 	@Test
 	void deveRetornarComoCNPJInvalido() {
 		
 		Assertions.assertThrows(CampoInvalidoException.class, () -> {
-			new Cnpj(CNPJ_INVALIDO_1);
+			CnpjMock.mockCNPJInvalidoComLetras();
 		});
 		
 		Assertions.assertThrows(CampoInvalidoException.class, () -> {
-			new Cnpj(CNPJ_INVALIDO_2);
+			CnpjMock.mockCNPJInvalidoQuantidadeMaior();
 		});
 		
 		Assertions.assertThrows(CampoInvalidoException.class, () -> {
-			new Cnpj("");
+			CnpjMock.mockCNPJInvalidoComVazio();
 		});
 		
 		Assertions.assertThrows(CampoInvalidoException.class, () -> {
-			new Cnpj(null);
+			CnpjMock.mockCNPJInvalidoComNulo();
 		});
 		
 	}

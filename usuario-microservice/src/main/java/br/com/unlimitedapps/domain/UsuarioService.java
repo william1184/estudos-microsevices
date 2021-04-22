@@ -25,7 +25,7 @@ public class UsuarioService {
 	 * @param ProdutoEntity
 	 * @return Optional<Usuario>
 	 */
-	public Optional<UsuarioModel> incluirUsuario(UsuarioModel usuario) {
+	public Optional<Usuario> incluirUsuario(Usuario usuario) {
 		verificaSeUsuarioJaExiste(usuario);
 			
 		if( usuario.getEmail() == null || CommonUtils.isTextoNuloOuVazio(usuario.getNome()) || 
@@ -39,8 +39,8 @@ public class UsuarioService {
 		
 	}
 
-	private void verificaSeUsuarioJaExiste(UsuarioModel usuario) {
-		Optional<UsuarioModel> usuarioBD = buscarUsuarioPorEmail(usuario.getEmail());
+	private void verificaSeUsuarioJaExiste(Usuario usuario) {
+		Optional<Usuario> usuarioBD = buscarUsuarioPorEmail(usuario.getEmail());
 		
 		if(usuarioBD.isPresent()) {
 			throw new UsuarioJaExisteException("Ja existe com o email " + usuario.getEmail());			
@@ -59,19 +59,19 @@ public class UsuarioService {
 	 * @param ProdutoEntity
 	 * @return Optional<Usuario>
 	 */
-	public Optional<UsuarioModel> atualizarUsuario(UsuarioModel usuario) {
+	public Optional<Usuario> atualizarUsuario(Usuario usuario) {
 		
-		if(usuario.getCpf() == null || CommonUtils.isTextoNuloOuVazio(usuario.getNome())) {
-			throw new CampoObrigatorioException("cpf e nome");
+		if(usuario.getId() == null || CommonUtils.isTextoNuloOuVazio(usuario.getNome())) {
+			throw new CampoObrigatorioException("id e nome");
 		}
 		
-		Optional<UsuarioModel> usuarioBD = buscarUsuarioPorCpf(usuario.getCpf());
+		Optional<Usuario> usuarioBD = buscarUsuarioPorIndentificador(usuario.getId());
 		
 		if(!usuarioBD.isPresent()) {
-			throw new UsuarioNaoExisteException("Nao existe com o cpf " + usuario.getCpf().getNumero());
+			throw new UsuarioNaoExisteException("Nao existe com o id " + usuario.getId());
 		}
 		
-		UsuarioModel usuarioAtualizado = usuarioBD.get();
+		Usuario usuarioAtualizado = usuarioBD.get();
 		
 		usuarioAtualizado.setNome(usuario.getNome());
 		usuarioAtualizado.setUrlImagem(usuario.getUrlImagem());
@@ -84,17 +84,16 @@ public class UsuarioService {
 	 * 
 	 * @param String
 	 */
-	public void deletarUsuario(String cpfNumeros) {
-		Cpf cpf = new Cpf(cpfNumeros);
+	public void deletarUsuario(String id) {
 		
-		Optional<UsuarioModel> usuarioBD = buscarUsuarioPorCpf(cpf);
+		Optional<Usuario> usuarioBD = buscarUsuarioPorIndentificador(id);
 		
 		if(usuarioBD.isPresent()) {
 			repository.deleta(usuarioBD.get());		
 			return;
 		}
 		
-		throw new UsuarioNaoExisteException("Nao existe com o cpf" + cpf);
+		throw new UsuarioNaoExisteException("Nao existe com o id" + id);
 		
 	}
 	
@@ -103,7 +102,7 @@ public class UsuarioService {
 	 * @param Email Email
 	 * @return Optional<Usuario>
 	 */
-	public Optional<UsuarioModel> buscarUsuarioPorEmail(String enderecoEmail) {
+	public Optional<Usuario> buscarUsuarioPorEmail(String enderecoEmail) {
 		return buscarUsuarioPorEmail(new Email(enderecoEmail));
 	}
 	
@@ -112,7 +111,22 @@ public class UsuarioService {
 	 * @param String
 	 * @return Optional<Usuario>
 	 */
-	public Optional<UsuarioModel> buscarUsuarioPorEmail(Email email) {
+	public Optional<Usuario> buscarUsuarioPorIndentificador(String id) {
+		
+		if( id == null ) {
+			throw new CampoObrigatorioException("Indentificador");
+		}
+		
+		return repository.buscaPorIndentificador(id);
+		
+	}
+	
+	/**
+	 * 
+	 * @param String
+	 * @return Optional<Usuario>
+	 */
+	public Optional<Usuario> buscarUsuarioPorEmail(Email email) {
 		
 		if( email == null ) {
 			throw new CampoObrigatorioException("Email");
@@ -127,7 +141,7 @@ public class UsuarioService {
 	 * @param String
 	 * @return Optional<Usuario>
 	 */
-	public Optional<UsuarioModel> buscarUsuarioPorCpf(String numeroCpf) {
+	public Optional<Usuario> buscarUsuarioPorCpf(String numeroCpf) {
 		return buscarUsuarioPorCpf( new Cpf(numeroCpf) );
 	}
 	/**
@@ -135,7 +149,7 @@ public class UsuarioService {
 	 * @param String
 	 * @return Optional<Usuario>
 	 */
-	public Optional<UsuarioModel> buscarUsuarioPorCpf(Cpf cpf) {
+	public Optional<Usuario> buscarUsuarioPorCpf(Cpf cpf) {
 		
 		if( cpf == null ) {
 			throw new CampoObrigatorioException("Cpf");
@@ -151,7 +165,7 @@ public class UsuarioService {
 	 * @param String
 	 * @return Page<Usuario>
 	 */
-	public Optional<List<UsuarioModel>> buscarTodosUsuarios(int pagina, int count) {
+	public Optional<List<Usuario>> buscarTodosUsuarios(int pagina, int count) {
 		
 		if( pagina == 0 && count == 0 ) {
 			throw new CampoObrigatorioException("Página e Count");

@@ -1,5 +1,6 @@
 package br.com.unlimitedapps.application;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +12,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import br.com.unlimitedapps.domain.UsuarioModel;
+import br.com.unlimitedapps.domain.Cpf;
+import br.com.unlimitedapps.domain.Email;
+import br.com.unlimitedapps.domain.Usuario;
 import br.com.unlimitedapps.domain.UsuarioService;
 
+@RestController
+@RequestMapping("/usuarios")
 public class UsuarioController {
 
 	private UsuarioService service;
@@ -27,7 +34,7 @@ public class UsuarioController {
 	@PostMapping
 	public ResponseEntity<UsuarioDto> incluirUsuario(@RequestBody UsuarioIncluirForm usuario) {
 		
-		Optional<UsuarioModel> usuarioDb = service.incluirUsuario(usuario.converter());
+		Optional<Usuario> usuarioDb = service.incluirUsuario(usuario.converter());
 		
 		if(!usuarioDb.isPresent()) {
 			return new ResponseEntity<>( HttpStatus.BAD_REQUEST );
@@ -39,7 +46,7 @@ public class UsuarioController {
 	@PutMapping
 	public ResponseEntity<UsuarioDto> alterarUsuario(@RequestBody UsuarioAlterarForm usuario) {
 		
-		Optional<UsuarioModel> usuarioDb = service.atualizarUsuario(usuario.converter());
+		Optional<Usuario> usuarioDb = service.atualizarUsuario(usuario.converter());
 		
 		if(!usuarioDb.isPresent()) {
 			return new ResponseEntity<>( HttpStatus.BAD_REQUEST );
@@ -48,10 +55,10 @@ public class UsuarioController {
 		return new ResponseEntity<>( UsuarioDto.converter(usuarioDb.get()), HttpStatus.OK);			
 	}
 	
-	@GetMapping("/email/{email}")
-	public ResponseEntity<UsuarioDto> buscarUsuarioPorEmail(@PathVariable String email)  {
+	@GetMapping("/{id}")
+	public ResponseEntity<UsuarioDto> buscarUsuarioPorIndentificador(@PathVariable String id)  {
 		
-		Optional<UsuarioModel> usuarioDb = service.buscarUsuarioPorEmail(email);
+		Optional<Usuario> usuarioDb = service.buscarUsuarioPorIndentificador(id);
 		
 		if( !usuarioDb.isPresent() ) {
 			return new ResponseEntity<>( HttpStatus.BAD_REQUEST );
@@ -60,22 +67,46 @@ public class UsuarioController {
 		return new ResponseEntity<>( new UsuarioDto(usuarioDb.get()), HttpStatus.OK);
 	}
 	
-//	@GetMapping("/{pagina}/{quantidade}")
-//	public ResponseEntity<Page<UsuarioDto>> buscarVariosUsuarios(@PathVariable String pagina, @PathVariable String quantidade)  {
-//		
-//		Page<Usuario> usuarios = service.buscarTodosUsuarios(Integer.parseInt(pagina), Integer.parseInt(quantidade));
-//		
-//		if( usuarios == null ) {
-//			return ResponseEntity.badRequest().build();
-//		}
-//		
-//		return new ResponseEntity<>( UsuarioDto.converter(usuarios), HttpStatus.OK);
-//	}
-	
-	@DeleteMapping("/{codigo}")
-	public ResponseEntity<String> deletarUsuario(@PathVariable String codigo)  {
+	@GetMapping("/email")
+	public ResponseEntity<UsuarioDto> buscarUsuarioPorEmail(@RequestBody Email email)  {
 		
-		service.deletarUsuario(codigo);
+		Optional<Usuario> usuarioDb = service.buscarUsuarioPorEmail(email);
+		
+		if( !usuarioDb.isPresent() ) {
+			return new ResponseEntity<>( HttpStatus.BAD_REQUEST );
+		}
+		
+		return new ResponseEntity<>( new UsuarioDto(usuarioDb.get()), HttpStatus.OK);
+	}
+	
+	@GetMapping("/cpf")
+	public ResponseEntity<UsuarioDto> buscarUsuarioPorCpf(@RequestBody Cpf cpf)  {
+		
+		Optional<Usuario> usuarioDb = service.buscarUsuarioPorCpf(cpf);
+		
+		if( !usuarioDb.isPresent() ) {
+			return new ResponseEntity<>( HttpStatus.BAD_REQUEST );
+		}
+		
+		return new ResponseEntity<>( new UsuarioDto(usuarioDb.get()), HttpStatus.OK);
+	}
+	
+	@GetMapping("/{pagina}/{quantidade}")
+	public ResponseEntity<List<UsuarioDto>> buscarVariosUsuarios(@PathVariable String pagina, @PathVariable String quantidade)  {
+		
+		Optional<List<Usuario>> usuarios = service.buscarTodosUsuarios(Integer.parseInt(pagina), Integer.parseInt(quantidade));
+		
+		if( !usuarios.isPresent() ) {
+			return ResponseEntity.badRequest().build();
+		}
+		
+		return new ResponseEntity<>( UsuarioDto.converter(usuarios.get()), HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<String> deletarUsuario(@PathVariable String id)  {
+		
+		service.deletarUsuario(id);
 		
 		return ResponseEntity.ok("Excluido com sucesso!");
 	}

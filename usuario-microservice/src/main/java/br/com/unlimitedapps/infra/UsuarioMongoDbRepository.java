@@ -1,3 +1,4 @@
+
 package br.com.unlimitedapps.infra;
 
 import java.util.Collections;
@@ -10,7 +11,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-import br.com.unlimitedapps.domain.UsuarioModel;
+import br.com.unlimitedapps.domain.Usuario;
 import br.com.unlimitedapps.domain.UsuarioRepository;
 
 
@@ -28,18 +29,18 @@ public class UsuarioMongoDbRepository implements UsuarioRepository {
 	}
 
 	@Override
-	public Optional<UsuarioModel> buscaPorEmail(String email) {
-		return Optional.of( mongo.findOne(Query.query(Criteria.where("email").is(email)), UsuarioModel.class) );
+	public Optional<Usuario> buscaPorEmail(String email) {
+		return Optional.ofNullable( mongo.findOne(Query.query(Criteria.where("email.endereco").is(email)), Usuario.class) );
 	}
 
 	@Override
-	public Optional<UsuarioModel> buscaPorCpf(String cpf) {
-		return Optional.of( mongo.findOne(Query.query(Criteria.where("cpf").is(cpf)), UsuarioModel.class) );
+	public Optional<Usuario> buscaPorCpf(String cpf) {
+		return Optional.ofNullable( mongo.findOne(Query.query(Criteria.where("cpf.numero").is(cpf)), Usuario.class) );
 	}
 
 	@Override
-	public Optional<List<UsuarioModel>> buscaTodosUsuarios(int pagina, int quantidade) {
-		return Optional.of( Collections.emptyList() );
+	public Optional<List<Usuario>> buscaTodosUsuarios(int pagina, int quantidade) {
+		return Optional.ofNullable( Collections.emptyList() );
 //		PageRequest pageable = PageRequest.of( pagina, quantidade);
 //		
 //		Query q = new Query(new Criteria().alike((Example<?>) new Usuario())).with(pageable);
@@ -50,18 +51,23 @@ public class UsuarioMongoDbRepository implements UsuarioRepository {
 	}
 	
 	@Override
-	public void deleta(UsuarioModel usuario) {
+	public void deleta(Usuario usuario) {
 		mongo.remove(usuario);
 	}
 
 	@Override
-	public <T> Optional<T> insere(T usuario) {
-		return Optional.of( mongo.insert(usuario) );
+	public Optional<Usuario> insere(Usuario usuario) {
+		return Optional.ofNullable( mongo.insert(usuario) );
 	}
 
 	@Override
-	public <T> Optional<T> atualiza(T usuario) {
-		return Optional.of( mongo.save(usuario) );
+	public Optional<Usuario> atualiza(Usuario usuario) {
+		return Optional.ofNullable( mongo.save(usuario) );
+	}
+
+	@Override
+	public Optional<Usuario> buscaPorIndentificador(String id) {
+		return Optional.ofNullable( mongo.findOne(Query.query(Criteria.where("_id").is(id)), Usuario.class) );
 	}
 
 	

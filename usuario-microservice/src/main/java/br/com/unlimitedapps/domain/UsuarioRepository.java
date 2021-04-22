@@ -1,18 +1,21 @@
 package br.com.unlimitedapps.domain;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UsuarioRepository {
 	
-	<T> Optional<T> buscaPorEmail(String email);
+	Optional<Usuario> buscaPorIndentificador(String id);
 	
-	<T> Optional<T> buscaPorCpf(String cpf);
+	Optional<Usuario> buscaPorEmail(String email);
 	
-	<T> Optional<T> buscaTodosUsuarios(int pagina, int quantidadade);
+	Optional<Usuario> buscaPorCpf(String cpf);
 	
-	<T> Optional<T> insere(T usuario);
+	Optional<List<Usuario>> buscaTodosUsuarios(int pagina, int quantidadade);
 	
-	<T> Optional<T> atualiza(T usuario);
+	Optional<Usuario> insere(Usuario usuario);
 	
-	void deleta(UsuarioModel usuario);
+	Optional<Usuario> atualiza(Usuario usuario);
+	
+	void deleta(Usuario usuario);
 }
